@@ -2,7 +2,14 @@ const dbPG = require("../config/index")
 
 const listMyNotes =  async (ownerId) => {
     try {
-        const query = await dbPG.query(`select id_doc, title, description, note, note_type, created_date from notes where owner_id = ${ownerId}`)
+        const query = await dbPG.query(`
+        select distinct n.id_doc, title, description, note, note_type, created_date, usr.user_name owner_name
+        from notes n left join note_user_tags nut
+        on n.id_doc = nut.id_doc left join users usr
+        on usr.id_user = n.owner_id
+        where n.owner_id = ${ownerId} 
+        or coalesce(nut.id_user, 0) = ${ownerId}  
+        `)
         return query.rows
     } catch (error) {
         console.error(error)
