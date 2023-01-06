@@ -1,11 +1,10 @@
 const router = require('express').Router();
 
 const UserAuthController = require('../controllers/user-auth');
-const ProductController = require('../controllers/product');
 const authorization = require('../middlewares/authorization');
 
-router.post('/auth/login', UserAuthController.Login);
-
-router.get('/product/list', authorization, ProductController.GetList);
+router.post('/user/login', UserAuthController.Login);
+router.post('/user/create', authorization, UserAuthController.Insert);
+router.delete('/user/delete/:id', authorization, UserAuthController.Delete);
 
 module.exports = router;

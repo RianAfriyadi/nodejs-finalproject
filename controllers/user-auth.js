@@ -1,27 +1,29 @@
-const { getData } = require("../models/user-auth")
+const { getData, insertUser, deleteUser } = require("../models/user-auth")
 const { generateToken } = require("../middlewares/jwt")
+const md5 = require('md5');
 
 class UserAuthController {
 
-    static Login(req, res) {
+    static async Login(req, res) {
         const{username, password} = req.body
-        const list = getData()
+        const list = await getData()
         let found = null
+        const xPassword = md5(password)
         list.forEach(itm => {
             if(found) {
                 return
             }
             
-            if(itm.username == username && itm.password == password) {
+            if(itm.user_name == username && itm.user_password == xPassword) {
                 found = itm
             }
         });
         
         if(found) {
             const token = generateToken({
-                id: found.id,
+                id: found.id_user,
                 username: username,
-                password: password
+                password: xPassword
             })
             res.status(200).json({
                 token: token
@@ -34,10 +36,40 @@ class UserAuthController {
         
     }
 
-    // static GetList(req, res) {
-    //     const list = getData()
-    //     res.status(200).json(list);
-    // }
+    static async Insert(req, res) {
+        const{username, password} = req.body
+        let errorMessage = null
+        if(username && password) {
+            const data = await insertUser({
+                username: username,
+                password: password
+            });
+            if(data) {
+                res.status(200).json({
+                    status: 0,
+                    message: "successfuly",
+                    data: data
+                });
+                return;
+            } else {
+                errorMessage = "failed inserting data user"
+            }
+        } else {
+            errorMessage = "username or password is required"
+        }
+        res.status(200).json({
+            status: 1,
+            message: errorMessage
+        });
+    }
+
+    static async Delete(req, res) {
+        
+        res.status(200).json({
+            status: 1,
+            message: ""
+        });
+    }
 }
 
 module.exports = UserAuthController
