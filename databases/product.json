@@ -1,0 +1,12 @@
+[
+    {
+        "code":"ITM001",
+        "name":"Kecap ABC",
+        "price":9000
+    },
+    {
+        "code":"ITM002",
+        "name":"Dunhill Filter 12",
+        "price":22000
+    }
+]
