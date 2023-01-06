@@ -1,13 +1,13 @@
 const { verifyToken } = require("./jwt")
 
-const authUser = (req, res, next) => {
+const authUser = async (req, res, next) => {
     const token = req.get("token")
     const userDecoded = verifyToken(token)
-    console.log(userDecoded)
     if(userDecoded) {
         const { findByID } = require("../models/user-auth")
-        const found = findByID(userDecoded.id)
+        const found = await findByID(userDecoded.id)
         if(found) {
+            res.locals.user = found
             return next()
         } 
     }

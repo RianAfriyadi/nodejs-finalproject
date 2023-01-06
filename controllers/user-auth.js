@@ -64,10 +64,25 @@ class UserAuthController {
     }
 
     static async Delete(req, res) {
-        
+        const{id} = req.params
+        let errorMessage = null
+        if(id) {
+            const result = await deleteUser(id)
+            if(result) {
+                res.status(200).json({
+                    status: 0,
+                    message: "successfuly"
+                });
+                return;
+            } else {
+                errorMessage = "failed deleting data user"
+            }
+        } else {
+            errorMessage = "id is required"
+        }
         res.status(200).json({
             status: 1,
-            message: ""
+            message: errorMessage
         });
     }
 }
